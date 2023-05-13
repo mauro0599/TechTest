@@ -28,5 +28,7 @@ namespace Test.Shared
         [Display(Name = "Precio")]
         [Required(ErrorMessage = "El campo {0} es obligatorio.")]
         public decimal Price { get; set; }
+
+        public string Image { get; set; }
     }
 }

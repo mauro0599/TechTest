@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Test.Server.Data;
 
@@ -10,9 +11,11 @@ using Test.Server.Data;
 namespace Test.Server.Migrations
 {
     [DbContext(typeof(DataContext))]
-    partial class DataContextModelSnapshot : ModelSnapshot
+    [Migration("20230513085204_Seeder")]
+    partial class Seeder
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -32,10 +35,6 @@ namespace Test.Server.Migrations
                     b.Property<string>("Description")
                         .HasMaxLength(500)
                         .HasColumnType("nvarchar(500)");
-
-                    b.Property<string>("Image")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -57,7 +56,6 @@ namespace Test.Server.Migrations
                         {
                             Id = 1,
                             Description = "Descripción de jabón",
-                            Image = "https://upload.wikimedia.org/wikipedia/commons/b/bf/Tualetsapo.jpg",
                             Name = "Jabón",
                             Price = 9.99m
                         },
@@ -65,7 +63,6 @@ namespace Test.Server.Migrations
                         {
                             Id = 2,
                             Description = "Telefono costoso",
-                            Image = "https://upload.wikimedia.org/wikipedia/commons/thumb/3/31/Nokia_3310_blue.jpg/200px-Nokia_3310_blue.jpg",
                             Name = "Teléfono",
                             Price = 799.99m
                         },
@@ -73,42 +70,9 @@ namespace Test.Server.Migrations
                         {
                             Id = 3,
                             Description = "Para cocinar",
-                            Image = "https://upload.wikimedia.org/wikipedia/commons/7/73/WMF_Schnelldrucktopf_4%2C5_Liter_Perfect_Ultra_retouched.jpg",
                             Name = "Olla",
                             Price = 20m
                         });
-                });
-
-            modelBuilder.Entity("Test.Shared.User", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<byte[]>("PasswordHash")
-                        .IsRequired()
-                        .HasColumnType("varbinary(max)");
-
-                    b.Property<byte[]>("PasswordSalt")
-                        .IsRequired()
-                        .HasColumnType("varbinary(max)");
-
-                    b.Property<string>("Role")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Username")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(450)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("Username")
-                        .IsUnique();
-
-                    b.ToTable("Users");
                 });
 #pragma warning restore 612, 618
         }

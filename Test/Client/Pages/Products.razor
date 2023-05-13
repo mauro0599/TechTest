@@ -1,37 +1,66 @@
 ﻿@page "/products"
+@using CsvHelper
 @inject IProductsService ProductsService
 @inject NavigationManager navigationManager
-<h3>Productos</h3>
-<table class="table">
-    <thead>
-    <tr>
-        <th>Nombre</th>
-        <th>Descripción</th>
-        <th>Precio</th>
-        <th></th>
-    </tr>
-    </thead>
-    <tbody>
-    @foreach (var product in ProductsService.Products)
-    {
+@inject IJSRuntime  JS
+
+<h3 class="text-center mb-4">Productos</h3>
+<div class="table-responsive">
+    <table class="table table-hover table-bordered">
+        <thead class="thead-dark">
         <tr>
-            <td>@product.Name</td>
-            <td>@product.Description</td>
-            <td>@product.Price</td>
-            <td>
-                <button class="btn btn-primary"
-                        @onclick="() => ShowProduct(product.Id)">
-                    <i class="oi oi-pencil"></i>
-                </button>
-            </td>
+            <th scope="col"></th>
+            <th scope="col">Nombre</th>
+            <th scope="col">Descripción</th>
+            <th scope="col">Precio</th>
+            <th scope="col"></th>
         </tr>
-    }
-    </tbody>
-</table>
+        </thead>
+        <tbody>
+        @foreach (var product in ProductsService.Products)
+        {
+            <tr>
+                <td>
+                    <a href="#">
+                        <img class="img-fluid rounded" src="@product.Image" alt="@product.Name" style="max-height: 100px; max-width: 100px;"/>
+                    </a>
+                </td>
+                <td>@product.Name</td>
+                <td>@product.Description</td>
+                <td>$@product.Price</td>
+                <td>
+                    <AuthorizeView>
+                        <Authorized>
+                            <button class="btn btn-primary btn-sm"
+                                    @onclick="() => ShowProduct(product.Id)">
+                                <i class="oi oi-pencil"></i> Editar
+                            </button>
+                        </Authorized>
+                        <NotAuthorized>
+                            <span class="text-muted">Acceso denegado</span>
+                        </NotAuthorized>
+                    </AuthorizeView>
+                </td>
+            </tr>
+        }
+        </tbody>
+    </table>
+</div>
 <button class="btn btn-primary"
-        @onclick="CreateNewProduct">
-        Nuevo Producto
-    </button>
+        @onclick="ExportarExcel">
+    Exportar a excel
+</button>
+<AuthorizeView Roles="Admin">
+    <Authorized>
+        <button class="btn btn-primary"
+                @onclick="CreateNewProduct">
+            Nuevo Producto
+        </button>
+    </Authorized>
+    <NotAuthorized>
+        <span class="text-muted">Acceso denegado</span>
+    </NotAuthorized>
+</AuthorizeView>
 @code {
     protected override async Task OnInitializedAsync()
     {
@@ -46,6 +75,32 @@
     void CreateNewProduct()
     {
         navigationManager.NavigateTo("/product");
+    }
+
+
+    private void ExportarExcel()
+    {
+        using (var package = new ExcelPackage())
+        {
+            var worksheet = package.Workbook.Worksheets.Add("Productos");
+
+            var tableBody = worksheet.Cells["A1:A1"].LoadFromCollection(
+                from f in ProductsService.Products
+                select new { f.Id, f.Name,f.Description,f.Image }, true);
+
+            var header = worksheet.Cells["A1:D1"];
+            worksheet.DefaultColWidth = 25;
+            tableBody.Style.HorizontalAlignment = ExcelHorizontalAlignment.Left;
+            tableBody.Style.Fill.PatternType = ExcelFillStyle.Solid;
+            tableBody.Style.Fill.BackgroundColor.SetColor(Color.WhiteSmoke);
+            tableBody.Style.Border.BorderAround(ExcelBorderStyle.Medium);
+            header.Style.Font.Bold = true;
+            header.Style.Font.Color.SetColor(Color.White);
+            header.Style.Fill.PatternType = ExcelFillStyle.Solid;
+            header.Style.Fill.BackgroundColor.SetColor(Color.DarkBlue);
+
+            JS.GuardarComo("productos.xlsx", package.GetAsByteArray());
+        }
     }
 
 }

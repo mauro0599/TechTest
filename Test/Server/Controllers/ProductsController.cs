@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Test.Server.Services;
 using Test.Shared;
@@ -7,23 +8,24 @@ namespace Test.Server.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize(Roles = "Admin")]
     public class ProductsController : ControllerBase
     {
         private readonly IProductsService _productsService;
 
         public ProductsController(IProductsService productsService)
         {
-            _productsService=productsService;
+            _productsService = productsService;
         }
         // GET: ProductsController
 
-        [HttpGet]
+        [HttpGet,AllowAnonymous]
         public async Task<List<Product>> GetProducts()
         {
             return await _productsService.GetProducts();
         }
 
-        [HttpGet("{id}")]
+        [HttpGet("{id}"),AllowAnonymous]
         public async Task<Product?> GetProductById(int id)
         {
             return await _productsService.GetProductById(id);
