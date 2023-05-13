@@ -8,7 +8,7 @@ namespace Test.Server.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [Authorize(Roles = "Admin")]
+    //[Authorize(Roles = "Admin")]
     public class ProductsController : ControllerBase
     {
         private readonly IProductsService _productsService;

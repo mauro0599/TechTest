@@ -29,7 +29,7 @@
                 <td>@product.Description</td>
                 <td>$@product.Price</td>
                 <td>
-                    <AuthorizeView>
+                    <AuthorizeView Roles="Admin">
                         <Authorized>
                             <button class="btn btn-primary btn-sm"
                                     @onclick="() => ShowProduct(product.Id)">
@@ -37,7 +37,6 @@
                             </button>
                         </Authorized>
                         <NotAuthorized>
-                            <span class="text-muted">Acceso denegado</span>
                         </NotAuthorized>
                     </AuthorizeView>
                 </td>
@@ -58,7 +57,6 @@
         </button>
     </Authorized>
     <NotAuthorized>
-        <span class="text-muted">Acceso denegado</span>
     </NotAuthorized>
 </AuthorizeView>
 @code {

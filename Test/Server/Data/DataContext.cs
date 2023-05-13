@@ -11,8 +11,6 @@ namespace Test.Server.Data
             
         }
         public DbSet<Product> Products { get; set; }
-        public DbSet<User> Users { get; set; }
-
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
@@ -45,8 +43,6 @@ namespace Test.Server.Data
                     Image = "https://upload.wikimedia.org/wikipedia/commons/7/73/WMF_Schnelldrucktopf_4%2C5_Liter_Perfect_Ultra_retouched.jpg"
                 }
             );
-            modelBuilder.Entity<User>().HasIndex(x => x.Username).IsUnique();
-            modelBuilder.Entity<User>().HasKey(x => x.Id);
 
         }
 

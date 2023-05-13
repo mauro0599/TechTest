@@ -1,9 +1,9 @@
 global using Microsoft.AspNetCore.Components.Authorization;
-global using Blazored.LocalStorage;
-using Blazored.LocalStorage;
+using Blazored.SessionStorage;
 using Microsoft.AspNetCore.Components.Web;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 using Test.Client;
+using Test.Client.Extensiones;
 using Test.Client.Services.ProductsService;
 
 var builder = WebAssemblyHostBuilder.CreateDefault(args);
@@ -12,7 +12,9 @@ builder.RootComponents.Add<HeadOutlet>("head::after");
 
 builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri(builder.HostEnvironment.BaseAddress) });
 builder.Services.AddScoped<IProductsService,ProductsService>();
-builder.Services.AddScoped<AuthenticationStateProvider, CustomAuthStateProvider>();
+
+builder.Services.AddBlazoredSessionStorage();
+builder.Services.AddScoped<AuthenticationStateProvider, AuthenticationExtension>();
 builder.Services.AddAuthorizationCore();
-builder.Services.AddBlazoredLocalStorage();
+
 await builder.Build().RunAsync();

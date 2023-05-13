@@ -1,5 +1,7 @@
 ﻿@inherits LayoutComponentBase
-
+@inject NavigationManager navigationManager
+@inject AuthenticationStateProvider AuthStateProvider
+@using Test.Client.Extensiones
 <div class="page">
     <div class="sidebar">
         <NavMenu />
@@ -7,11 +9,20 @@
 
     <main>
         <div class="top-row px-4">
-            <LoginLogoutButton></LoginLogoutButton>
-        </div>
+            <a @onclick="CerrarSesion" href="javascript:void(0)">Salir</a>
+            </div>
 
         <article class="content px-4">
             @Body
         </article>
     </main>
 </div>
+@code
+{
+    async Task CerrarSesion()
+    {
+        var AuthExt = (AuthenticationExtension)AuthStateProvider;
+        await AuthExt.UpdateAuthState(null);
+        navigationManager.NavigateTo("/",true);
+    }
+}

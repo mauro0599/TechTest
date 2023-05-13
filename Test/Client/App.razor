@@ -1,9 +1,22 @@
-﻿<CascadingAuthenticationState>
+﻿@inject NavigationManager navigationManager
+
+
+<CascadingAuthenticationState>
 <Router AppAssembly="@typeof(App).Assembly">
     <Found Context="routeData">
         <AuthorizeRouteView RouteData="@routeData" DefaultLayout="@typeof(MainLayout)">
             <NotAuthorized>
-                Usted no tiene autorización para acceder a este sitio.
+                @{
+                    //if (context.User.Identity?.IsAuthenticated!=true)
+                    //{
+                    //    navigationManager.NavigateTo("/login");
+                    //}
+                    //else
+                    //{
+                    //    <p class="alert alert-danger"> Usted no tiene autorización para acceder a este sitio.</p>
+                    //}
+                        navigationManager.NavigateTo("/");
+                }
             </NotAuthorized>
             </AuthorizeRouteView>
         <FocusOnNavigate RouteData="@routeData" Selector="h1" />

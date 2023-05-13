@@ -1,24 +1,42 @@
-﻿@page "/login"
+﻿@page "/"
+@layout LoginLogoutButton
+@using System.Drawing.Text
+@using Test.Client.Extensiones
 @inject HttpClient Http
 @inject AuthenticationStateProvider AuthStateProvider
-@inject ILocalStorageService LocalStorage
-<h3>Login</h3>
-<EditForm Model="user" OnSubmit="HandlerLogin">
-    <label for="Username">Nombre</label>
-    <InputText @bind-Value="user.Username"></InputText>
-    <label for="Password">Contraseña</label>
-    <InputText @bind-Value="user.Password" type="password"></InputText>
-    <button type="submit" class="btn btn-primary">Ingresar</button>
-</EditForm>
+@inject NavigationManager navigationManager
+<h3 class="text-center">Login</h3>
+<div class="row justify-content-center mt-5">
+    <div class="col-lg-4 border">
+        <div class="mb-3">
+            <label for="username" class="form-label">Correo</label>
+            <input id="username" @bind="login.Username" class="form-control" type="email" />
+        </div>
+        <div class="mb-3">
+            <label for="password" class="form-label">Contraseña</label>
+            <input id="password" @bind="login.Password" class="form-control" type="password" />
+        </div>
+        <div class="mb-3 d-grid">
+            <button @onclick="IniciarSesion" class="btn btn-primary">Login</button>
+        </div>
+    </div>
+</div>
 @code {
     UserDto user = new UserDto();
+    private UserDto login = new UserDto();
 
-    async Task HandlerLogin()
+    private async Task IniciarSesion()
     {
-        var result = await Http.PostAsJsonAsync("api/Auth/login",user);
-        var token = await result.Content.ReadAsStringAsync();
-        await LocalStorage.SetItemAsync("AppSettings:Token", token);
-        await AuthStateProvider.GetAuthenticationStateAsync();
+        var loginResponse = await Http.PostAsJsonAsync<UserDto>("/api/Usuario/Login", login);
+        if (loginResponse.IsSuccessStatusCode)
+        {
+            var sesionUsuario = await loginResponse.Content.ReadFromJsonAsync<SesionDTO>();
+            var authExt = (AuthenticationExtension)AuthStateProvider;
+            await authExt.UpdateAuthState(sesionUsuario);
+            navigationManager.NavigateTo("/Index");
+        }
     }
+
+
 
 }
