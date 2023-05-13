@@ -1,0 +1,70 @@
+﻿@page "/product"
+@page "/product/{id:int}"
+@inject IProductsService ProductsService
+@inject NavigationManager NavigationManager
+<h3>Product</h3>
+@if (Id == null)
+{
+    <PageTitle> Crear nuevo Producto</PageTitle>
+    <h3>Crear nuevo producto</h3>
+}
+else
+{
+    <PageTitle> Editar @product.Name </PageTitle>
+    <h3>Editar @product.Name</h3>
+}
+<EditForm Model="@product" OnSubmit="HandleSubmit">
+    <div>
+        <label for="@product.Name">Nombre</label>
+        <InputText id="@product.Name" @bind-Value="product.Name" class="form-control"/>
+    </div>
+    <div>
+        <label for="Description">Descripcion</label>
+        <InputText id="Description" @bind-Value="product.Description" class="form-control"/>
+    </div>
+    <div>
+        <label for="Price">Descripcion</label>
+        <InputNumber TValue="decimal" id="Price" @bind-Value="product.Price" class="form-control" />
+    </div>
+    <br/>
+    <button type="submit" class="btn btn-primary">@btnText</button>
+    <button type="button" class="btn btn-danger" @onclick="DeleteProduct">Eliminar</button>
+</EditForm>
+@code {
+    [Parameter]
+    public int? Id { get; set; }
+
+    string btnText = String.Empty;
+
+    Test.Shared.Product product = new Test.Shared.Product() { Name = "Nuevo Producto" };
+    protected override void OnInitialized()
+    {
+        btnText = Id == null ? "Guardar nuevo producto" : "Actualizar producto";
+    }
+
+    protected override async Task OnParametersSetAsync()
+    {
+        if (Id != null)
+        {
+            var result = await ProductsService.GetProductById((int)Id);
+            if (result != null) 
+                product = result;
+            else
+                NavigationManager.NavigateTo("/product");
+
+        }
+    }
+
+    async Task HandleSubmit()
+    {
+        if (Id == null) await ProductsService.CreateProduct(product);
+        else await ProductsService.UpdateProduct((int)Id, product);
+
+    }
+
+    async Task DeleteProduct()
+    {
+        await ProductsService.DeleteProduct(product.Id);
+    }
+
+}

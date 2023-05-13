@@ -1,0 +1,51 @@
+﻿@page "/products"
+@inject IProductsService ProductsService
+@inject NavigationManager navigationManager
+<h3>Productos</h3>
+<table class="table">
+    <thead>
+    <tr>
+        <th>Nombre</th>
+        <th>Descripción</th>
+        <th>Precio</th>
+        <th></th>
+    </tr>
+    </thead>
+    <tbody>
+    @foreach (var product in ProductsService.Products)
+    {
+        <tr>
+            <td>@product.Name</td>
+            <td>@product.Description</td>
+            <td>@product.Price</td>
+            <td>
+                <button class="btn btn-primary"
+                        @onclick="() => ShowProduct(product.Id)">
+                    <i class="oi oi-pencil"></i>
+                </button>
+            </td>
+        </tr>
+    }
+    </tbody>
+</table>
+<button class="btn btn-primary"
+        @onclick="CreateNewProduct">
+        Nuevo Producto
+    </button>
+@code {
+    protected override async Task OnInitializedAsync()
+    {
+        await ProductsService.GetProducts();
+    }
+
+    void ShowProduct(int id)
+    {
+        navigationManager.NavigateTo($"product/{id}");
+    }
+
+    void CreateNewProduct()
+    {
+        navigationManager.NavigateTo("/product");
+    }
+
+}

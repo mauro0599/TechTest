@@ -1,4 +1,7 @@
 using Microsoft.AspNetCore.ResponseCompression;
+using Microsoft.EntityFrameworkCore;
+using Test.Server.Data;
+using Test.Server.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -6,7 +9,8 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllersWithViews();
 builder.Services.AddRazorPages();
-
+builder.Services.AddDbContext<DataContext>(x => x.UseSqlServer("name=LocalConnection"));
+builder.Services.AddScoped<IProductsService, ProductsService>();
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
