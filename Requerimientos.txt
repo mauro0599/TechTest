@@ -6,7 +6,7 @@ Los mismos deben incluir los siguientes campos
 - Nombre (obligatorio)
 - Descripcion (opcional)
 - Precio (obligatorio)
-- Una Foto (obligatorio)
+- Una Foto (obligatorio, Fichero a subir)
 
 - En una vista principal donde muestre todos los productos del sistema, y posibilidad de Agregar Nuevo, Editar, Eliminar (CRUD completo)
 - Posibilidad de Exportar via Pdf o Excel
