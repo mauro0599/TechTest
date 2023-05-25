@@ -1,0 +1,17 @@
+﻿@using BlazorCrud.Client.Extenciones;
+@using Microsoft.AspNetCore.Components.Authorization;
+@inject AuthenticationStateProvider autenticacionProvider;
+@inject NavigationManager navManager;
+
+<MudPaper Width="250px" Class="py-3" Elevation="0">
+    <MudNavMenu Dense="true" Color="Color.Info">
+        <MudNavLink Href="/Index" Icon="@Icons.Material.Filled.Dashboard">Home</MudNavLink>
+        <AuthorizeView Roles="Administrador,Supervisor">
+            <Authorized>
+                <MudNavLink Href="/productos" Icon="@Icons.Material.Filled.Shop">Productos</MudNavLink>
+
+            </Authorized>
+        </AuthorizeView>
+
+    </MudNavMenu>
+</MudPaper>
